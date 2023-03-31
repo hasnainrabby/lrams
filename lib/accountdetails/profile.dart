@@ -58,6 +58,7 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             !isLoading ?
+                
             Center(
               child: ListView(
                      padding: EdgeInsets.all(10.0),
@@ -70,39 +71,60 @@ class _ProfileState extends State<Profile> {
                        ],
                          isRepeatingAnimation: true,
                          totalRepeatCount: 20,),
+
                          dataResponse!= null ? Container():
-                            // Image(image: dataResponse['avatar']),
-                             Image.network(dataResponse['avatar']),
+                             Container(
+                               alignment: Alignment.center,
+                               child: FadeInImage(placeholder: AssetImage('assets/images/placeholder.png'),
+                                   image: NetworkImage(dataResponse['avatar']),
+                               fit: BoxFit.cover),
+                             ),
+                             //Image(image: dataResponse['avatar']),
+                            // Image.network(dataResponse['avatar']),
                        Divider(
                          thickness: 0.8,
                        ),
-                       Text('Id : ${dataResponse['id']}' ,
-                         style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                       Divider(
-                         thickness: 0.8,
-                       ),
-                         Text('Name : ${dataResponse['name']}',
-                           style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                         Divider(
-                           thickness: 0.8,
+                       Card(
+                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+                         elevation: 5,
+                         color: Colors.green.shade100,
+                         child: Padding(
+                           padding: const EdgeInsets.all(8.0),
+                           child: Column(
+                             crossAxisAlignment: CrossAxisAlignment.start,
+                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                               SizedBox(
+                                 height: 5,
+                               ),
+                               Text('User ID : ${dataResponse['id']}' ,
+                                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+                               Divider(thickness: 0.0,),
+
+                               Text('Name : ${dataResponse['name']}',
+                                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+
+                               Divider(thickness: 0.0,),
+                               Text('Email : ${dataResponse['email']} ' ,
+                                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+
+                               Divider(thickness: 0.0,),
+                               Text('Phone : ${dataResponse['phone']}' ,
+                                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+                               Divider(thickness: 0.0,),
+                               Text('Gender : ${dataResponse['gender']} ',
+                                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+                               Divider(thickness: 0.0,),
+                               Text('Address : ${dataResponse['address']}',
+                                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+                               SizedBox(
+                                 height: 5,
+                               ),
+                             ],
+                           ),
                          ),
-                         Text('Email : ${dataResponse['email']} ' ,
-                           style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                       Divider(
-                         thickness: 0.8,
-                       ),
-                       Text('Phone : ${dataResponse['phone']}' ,
-                         style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                       Divider(
-                         thickness: 0.8,
-                       ),
-                       Text('Gender :${dataResponse['gender']} ',
-                         style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                       Divider(
-                         thickness: 0.8,
-                       ),
-                       Text('Address : ${dataResponse['address']}',
-                         style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
+                       )
+
                      ],
                 ),
             ):

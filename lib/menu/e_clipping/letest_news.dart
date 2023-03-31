@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import '../auth_provider.dart';
+import '../../auth_provider.dart';
 import 'package:open_file/open_file.dart';
 
-class Eclipping extends StatefulWidget {
+class LetestNews extends StatefulWidget {
   @override
-  _EclippingState createState() => _EclippingState();
+  _LetestNewsState createState() => _LetestNewsState();
 }
 
-class _EclippingState extends State<Eclipping> {
+class _LetestNewsState extends State<LetestNews> {
   late Future<List<dynamic>> _futureNews;
   String token = '';
 
@@ -74,7 +74,7 @@ class _EclippingState extends State<Eclipping> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('E-clipping',
+        title: Text('Letest News',
             style: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500)),
         centerTitle: true,
       ),
@@ -86,19 +86,29 @@ class _EclippingState extends State<Eclipping> {
               itemCount: snapshot.data?.length,
               itemBuilder: (context, index) {
                 final news = snapshot.data![index];
-                return ListTile(
-                  title: Text(news['title']),
-                  subtitle: Text(news['news_date']),
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.picture_as_pdf,
-                      color: Colors.redAccent,
+                return Card(
+                  elevation: 5,
+                  color: Colors.green.shade100,
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(15),
+
+                ),
+                        side: BorderSide(width: 2, color: Colors.green)),
+                  child: ListTile(
+                    title: Text(news['title']),
+                    subtitle: Text(news['news_date']),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.picture_as_pdf,
+                        color: Colors.redAccent,
+                      ),
+                      onPressed: () async {
+                        // Open PDF file
+                        final url = news['file'];
+                        _openPdf(context, url);
+                      },
                     ),
-                    onPressed: () async {
-                      // Open PDF file
-                      final url = news['file'];
-                      _openPdf(context, url);
-                    },
                   ),
                 );
               },

@@ -4,12 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:lrams/menu/aboutus.dart';
-import 'package:lrams/menu/eclipping.dart';
 import 'package:lrams/menu/myaccount.dart';
 import 'package:lrams/menu/notices.dart';
 import 'package:provider/provider.dart';
 import '../auth_provider.dart';
-import '../lrams.dart';
+import 'e_clipping/eclipping.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -19,13 +18,15 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
   String _selectedItem = 'title';
   List _books = [];
-   TextEditingController _searchController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
   String token = '';
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     token = Provider.of<AuthProvider>(context).token;
   //  _fetchBooks();
     _getSearchResults();
@@ -149,8 +150,23 @@ class _SearchScreenState extends State<SearchScreen> {
                   leading: Icon(FontAwesomeIcons.noteSticky),
                   title: Text("Log Out", style:
                   TextStyle(fontSize:18,fontWeight:FontWeight.w500,fontFamily: 'Montserrat')),
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LRAMS()));
+                  onTap: () async {
+                    // call the logout API to invalidate the token
+                    final response = await post(Uri.parse('https://library.parliament.gov.bd:8080/api/auth/logout'),
+                        headers: {'Authorization': 'Bearer $token'});
+                    if (response.statusCode == 200) {
+                      // remove the token from the provider
+                      Provider.of<AuthProvider>(context, listen: false).token;
+                      // navigate to the login screen
+                      Navigator.pushNamedAndRemoveUntil(context,'/login', (route) => false);
+                    } else {
+                      debugPrint('Logout failed with error code ${response.statusCode}');
+                      // show an error message if the logout API returns an error
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Logout failed. Please try again later.'),
+                        duration: Duration(seconds: 3),
+                      ));
+                    }
                   },
                 ),
               ),

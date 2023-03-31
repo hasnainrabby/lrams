@@ -62,9 +62,19 @@ class _NoticePageState extends State<NoticePage> {
             child: ListView.builder(
               itemCount: notices.length,
               itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text('Title :'+ notices[index]['title']),
-                  subtitle: Text('Description:' + notices[index]['description']),
+                return Card(
+                  elevation: 5,
+                  color: Colors.green.shade100,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+
+                      ),
+                      side: BorderSide(width: 2, color: Colors.green)),
+                  child: ListTile(
+                    title: Text('Title :'+ notices[index]['title']),
+                    subtitle: Text('Description:' + notices[index]['description']),
+                  ),
                 );
               },
             ),

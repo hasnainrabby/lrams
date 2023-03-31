@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../auth_provider.dart';
+import 'package:intl/intl.dart';
+
 
 
 late Map mapResponse;
 late List listResponse;
 bool isLoading = false;
+final df = new  DateFormat.yMMMMd();
 class SearchHistory extends StatefulWidget {
   const SearchHistory({Key? key}) : super(key: key);
 
@@ -56,29 +59,44 @@ class _SearchHistoryState extends State<SearchHistory> {
             Expanded(
               child: ListView.builder(itemBuilder: (context,index){
                 return Container(
-                  child: Column(
-                    children: [
-                      Text('ID :'+listResponse[index]['id'].toString(),
-                        style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                      Divider(
-                        thickness: 0.8,
+                  child: Card(
+                    elevation: 5,
+                    color: Colors.green.shade100,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+
+                        ),
+                        side: BorderSide(width: 2, color: Colors.green)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Category:' +listResponse[index]['category'].toString(),
+                                style: TextStyle(fontFamily: 'Montserrat',fontSize: 15,fontWeight: FontWeight.w500),),
+                              Text('Keyword:' +listResponse[index]['keyword'].toString(),
+                                style: TextStyle(fontFamily: 'Montserrat',fontSize: 15,fontWeight: FontWeight.w500),),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Search value:' +listResponse[index]['keyword_value'].toString(),
+                                style: TextStyle(fontFamily: 'Montserrat',fontSize: 15,fontWeight: FontWeight.w500),),
+                              Text(
+                                df.format(DateTime.parse((listResponse[index]['created_at']))),
+                                style: TextStyle(fontFamily: 'Montserrat',fontSize: 15,fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
-                    /*  Text('User ID :'+listResponse[index]['user_id'].toString(),
-                        style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                      Divider(
-                        thickness: 0.8,
-                      ),*/
-                      Text('Category :'+listResponse[index]['category'].toString(),
-                        style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                      Divider(
-                        thickness: 0.8,
-                      ),
-                      Text('Title :'+listResponse[index]['keyword_value'].toString(),
-                        style: TextStyle(fontFamily: 'Montserrat',fontSize: 20,fontWeight: FontWeight.w500),),
-                      Divider(
-                        thickness: 0.8,
-                      ),
-                    ],
+                    ),
                   ),
                 );
               },

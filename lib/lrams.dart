@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'menu/search.dart';
 import 'package:lrams/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+//created by: Md Hasnain Rabby update on: 31/03/2023
 
 class LRAMS extends StatefulWidget {
   const LRAMS({Key? key}) : super(key: key);
@@ -15,7 +17,25 @@ class LRAMS extends StatefulWidget {
 class _LRAMSState extends State<LRAMS> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool rememberMe = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // Load rememberMe state
+    loadRememberMe();
+  }
+
+  void loadRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      rememberMe = prefs.getBool('rememberMe') ?? false;
+      if (rememberMe) {
+        emailController.text = prefs.getString('email') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+    }
+    });
+  }
 
 
   @override
@@ -73,10 +93,29 @@ class _LRAMSState extends State<LRAMS> {
             ),
             useremailtextFieldView(),
             passwordtextFieldView(),
+            rememberMeCheckbox(),
             loginButton()
           ],
         )
       ],
+    );
+  }
+  Widget rememberMeCheckbox(){
+    return Container(
+      padding: EdgeInsets.all(20.0),
+      child: Row(
+        children: [
+          Checkbox(
+            value: rememberMe,
+            onChanged: (value){
+              setState(() {
+                rememberMe = value!;
+              });
+            },
+          ),
+          Text("Remember me",style: TextStyle(fontSize: 16,color: Colors.white,fontFamily: 'Montserrat',fontWeight:FontWeight.w700),)
+        ],
+      ),
     );
   }
 //Username Field
@@ -142,7 +181,7 @@ class _LRAMSState extends State<LRAMS> {
         GestureDetector(
           onTap: (){
 
-            login(emailController.text.toString(),passwordController.text.toString(),context);
+            login(emailController.text.toString(),passwordController.text.toString(),context,rememberMe);
 
           },
           child: Container(
@@ -172,7 +211,8 @@ class _LRAMSState extends State<LRAMS> {
   }
 }
 //Login Function, call from API.
-void login(String username, String password,BuildContext context) async {
+void login(String username, String password,BuildContext context,bool rememberMe) async {
+
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
   try{
     Response response = await post(Uri.parse('https://library.parliament.gov.bd:8080/api/auth/login'),
@@ -189,6 +229,21 @@ void login(String username, String password,BuildContext context) async {
       authProvider.setToken(token);
       print(data['token']);
       print("Account login successfully");
+      if (rememberMe) {
+        await saveCredentials(username, password);
+      }else{
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('rememberMe', false);
+        await prefs.setString('email', '');
+        await prefs.setString('password', '');
+      }
+
+      // Navigate to the next screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SearchScreen()),
+      );
+
       final snackBar = SnackBar(
         duration: Duration(milliseconds: 900),
         content: Text("Successfully Login!",textAlign: TextAlign.center,style:
@@ -211,6 +266,12 @@ void login(String username, String password,BuildContext context) async {
   catch(e) {
     print(e.toString());
   }
+}
+Future<void> saveCredentials(String username, String password) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('rememberMe', true);
+  await prefs.setString('email', username);
+  await prefs.setString('password', password);
 }
 
 
