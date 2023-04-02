@@ -157,10 +157,18 @@ class _SearchNewsState extends State<SearchNews> {
             SizedBox(height: 20),
             ElevatedButton(
               child: Text('Search News'),
-              onPressed:   _isLoading ? null : _searchNews,
+              onPressed:    _searchNews,
             ),
             SizedBox(height: 20),
-            Text('Search News Results:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,fontFamily: 'Montserrat')),
+              _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  :
+              Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Search News Results:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500,fontFamily: 'Montserrat')),
+              ],
+            ),
             SizedBox(height: 10),
               ListView.builder(
                 shrinkWrap: true,
@@ -175,7 +183,7 @@ class _SearchNewsState extends State<SearchNews> {
                           bottomRight: Radius.circular(15),
                         ),
                         side: BorderSide(width: 2, color: Colors.green)),
-                    child: ListTile(
+                    child:  ListTile(
                       title: Text(_searchResults[index]["title"]),
                       subtitle: Text(_searchResults[index]["news_date"]),
                       trailing: IconButton(

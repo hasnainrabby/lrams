@@ -273,7 +273,7 @@ class _SearchScreenState extends State<SearchScreen> {
         throw Exception('Request failed with error: ${responseData['message']}.');
       }
       var data = responseData['data'];
-      print('Response data: $data');
+     // print('Response data: $data');
       if (data == null || data['books'] == null) {
         throw Exception('Request failed with error: Data format is invalid.');
       }
