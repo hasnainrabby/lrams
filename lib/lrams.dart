@@ -106,6 +106,14 @@ class _LRAMSState extends State<LRAMS> {
       child: Row(
         children: [
           Checkbox(
+            side: MaterialStateBorderSide.resolveWith(
+      (Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+    return const BorderSide(color: Colors.white);
+    }
+    return const BorderSide(color: Colors.white);
+    },
+    ),
             value: rememberMe,
             onChanged: (value){
               setState(() {
@@ -136,7 +144,7 @@ class _LRAMSState extends State<LRAMS> {
             prefixIcon: Icon(Icons.person,color: Colors.white70,),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.red),
+              borderSide: BorderSide(color: Colors.yellow.shade400),
             ),
           enabledBorder:  OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -164,7 +172,7 @@ class _LRAMSState extends State<LRAMS> {
             prefixIcon: Icon(Icons.lock,color: Colors.white70,),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
-              borderSide: BorderSide(color: Colors.red),
+              borderSide: BorderSide(color: Colors.yellow.shade400),
             ),
             enabledBorder:  OutlineInputBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -247,8 +255,8 @@ void login(String username, String password,BuildContext context,bool rememberMe
       final snackBar = SnackBar(
         duration: Duration(milliseconds: 900),
         content: Text("Successfully Login!",textAlign: TextAlign.center,style:
-        TextStyle(fontSize:15,fontWeight:FontWeight.w700,fontFamily: 'Montserrat',color: Colors.white,),),
-        backgroundColor: Colors.yellow.shade500,);
+        TextStyle(fontSize:15,fontWeight:FontWeight.w700,fontFamily: 'Montserrat',color: Colors.yellow,),),
+        backgroundColor: Colors.black54,);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
 

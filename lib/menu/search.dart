@@ -36,7 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text("LRAMS,Bangladesh National Parliament",style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500),),
+        title: Text("LRAMS,Bangladesh National Parliament",style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500,fontSize: 16),),
         centerTitle: true,
       ),
       body:Stack(
@@ -48,8 +48,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 height: MediaQuery.of(context).size.height * 0.75,
                 width: MediaQuery.of(context).size.width * 1.0,
                 child:AnimatedTextKit(animatedTexts: [
-                  TyperAnimatedText('Library Research and Archive Management System',textStyle: TextStyle(
-                      fontWeight: FontWeight.w500,fontSize: 15,fontFamily: 'Montserrat',color: Colors.green
+                  TyperAnimatedText('Welcome To Library Research and Archive Management System',textStyle: TextStyle(
+                      fontWeight: FontWeight.w500,fontSize: 12,fontFamily: 'Montserrat',color: Colors.green
                   ) ),
                 ],
                   isRepeatingAnimation: true,
@@ -206,8 +206,11 @@ class _SearchScreenState extends State<SearchScreen> {
               items: [
                 DropdownMenuItem(value: 'title', child: Text('Title')),
                 DropdownMenuItem(value: 'author', child: Text('Author')),
+                DropdownMenuItem(value: 'subject', child: Text('Subject')),
                 DropdownMenuItem(value: 'issn', child: Text('ISSN')),
                 DropdownMenuItem(value: 'isbn', child: Text('ISBN')),
+                DropdownMenuItem(value: 'accession_number', child: Text('Accession Number')),
+                DropdownMenuItem(value: 'call_number', child: Text('Call Number')),
               ],
             ),
             SizedBox(height: 16.0),
@@ -256,7 +259,7 @@ class _SearchScreenState extends State<SearchScreen> {
       };
       final uri = Uri.https(
         'library.parliament.gov.bd:8080',
-        '/api/advance-search/ebook-search',
+        '/api/advance-search/book-search',
         queryParameters,
       );
       final response = await get(uri, headers: {'Authorization': 'Bearer $token'});
@@ -264,7 +267,7 @@ class _SearchScreenState extends State<SearchScreen> {
       if (response.statusCode != 200) {
         throw Exception('Request failed with status: ${response.statusCode}.');
       }
-      print('Response body: ${response.body}');
+    //  print('Response body: ${response.body}');
       final responseData = json.decode(response.body);
       if (!responseData['status']) {
         throw Exception('Request failed with error: ${responseData['message']}.');
