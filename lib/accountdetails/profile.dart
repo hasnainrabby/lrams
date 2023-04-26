@@ -41,6 +41,7 @@ class _ProfileState extends State<Profile> {
     if (response.statusCode == 200) {
       mapResponse = json.decode(response.body);
       dataResponse = mapResponse['data']['user'];
+
     } else {
       throw Exception("Failed to load data");
     }

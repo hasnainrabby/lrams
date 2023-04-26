@@ -236,9 +236,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: [
                         Text(_books[index].author,style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500),),
                         SizedBox(width: 20.0,),
-                        Text('ISBN: ${_books[index].isbn}',style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500),),
+                        Text('ISBN: ${_books[index].otherTitle}',style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500),),
                         SizedBox(width: 20.0,),
-                        Text('Available: ${_books[index].visibility.toString()}',style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500, color: Colors.green),),
+                        Text(_books[index].publisher,style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500, color: Colors.green),),
                     ],)
                   ),
                 ),
@@ -267,21 +267,22 @@ class _SearchScreenState extends State<SearchScreen> {
       if (response.statusCode != 200) {
         throw Exception('Request failed with status: ${response.statusCode}.');
       }
-    //  print('Response body: ${response.body}');
+      print('Response body: ${response.body}');
       final responseData = json.decode(response.body);
       if (!responseData['status']) {
         throw Exception('Request failed with error: ${responseData['message']}.');
       }
-      var data = responseData['data'];
+      var data = responseData['data']['books']['data'];
      // print('Response data: $data');
-      if (data == null || data['books'] == null) {
+      /*if (data == null || data['data'] == null) {
         throw Exception('Request failed with error: Data format is invalid.');
-      }
-      final booksData = data['books'] as List<dynamic>;
+      }*/
+      final booksData = data['data'] as List<dynamic>;
       final books = booksData.map((bookData) => Book.fromJson(bookData)).toList();
 
       setState(() {
         _books = books;
+        print(_books);
         if (data['suggestion'] != null) {
           // Display suggestion to user
           print('Suggestion: ${data['suggestion']}');
@@ -295,36 +296,81 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 class Book {
-  final int id;
   final String title;
   final String author;
-  final String issn;
-  final String isbn;
-  final int visibility;
- // final int price;
+  final String classificationNumber;
+  final String otherTitle;
+  final String publisher;
+  final String description;
 
   Book({
-    required this.id,
     required this.title,
     required this.author,
-    required this.issn,
-    required this.isbn,
-    required this.visibility,
-   // required this.price,
+    required this.classificationNumber,
+    required this.otherTitle,
+    required this.publisher,
+    required this.description,
   });
-
   factory Book.fromJson(Map<String, dynamic> json) {
-    final bookData = json;
+    String title = '';
+    String author = '';
+    String classificationNumber = '';
+    String otherTitle = '';
+    String publisher = '';
+    String description = '';
+
+    // Loop through all fields in the record
+    json.forEach((key, value) {
+      if (value is List) {
+        // Loop through all subfields in each field
+        value.forEach((subfield) {
+          if (subfield['subfield'] == '20') {
+            // Found a subfield containing title data
+            title += subfield['value'] ?? '';
+          } else if (subfield['subfield'] == '3') {
+            // Found a subfield containing author data
+            author += subfield['value'] ?? '';
+          } else if (subfield['subfield'] == '14') {
+            // Found a subfield containing classification number data
+            classificationNumber += subfield['value'] ?? '';
+          } else if (subfield['subfield'] == '23') {
+            // Found a subfield containing other title data
+            otherTitle += subfield['value'] ?? '';
+          } else if (subfield['subfield'] == '29') {
+            // Found a subfield containing publisher data
+            publisher += subfield['value'] ?? '';
+          } else if (subfield['subfield'] == '30' || subfield['subfield'] == '32' || subfield['subfield'] == '34') {
+            // Found a subfield containing description data
+            description += subfield['value'] ?? '';
+          }
+        });
+      }
+    });
+
     return Book(
-      id: bookData['id'],
-      title: bookData['title'] ,
-      author: bookData['author'] ,
-      issn: bookData['issn'],
-      isbn: bookData['isbn'],
-      visibility: bookData['visibility'],
-     // price: bookData['price'],
+      title: title,
+      author: author,
+      classificationNumber: classificationNumber,
+      otherTitle: otherTitle,
+      publisher: publisher,
+      description: description,
     );
   }
+
+  /*factory Book.fromJson(Map<String, dynamic> json) {
+    return Book(
+      title: '${json[59][8]['value'] ?? ''} ${json[59][9]['value'] ?? ''}',
+      author: json[7]['value'] ?? '',
+      classificationNumber:
+      '${json[6]['value'] ?? ''} ${json[16]['value'] ?? ''}',
+      otherTitle: json[10]['value'] ?? '',
+      publisher:
+      '${json[11]['value'] ?? ''} ${json[12]['value'] ?? ''} ${json[13]['value'] ?? ''}',
+      description:
+      '${json[14]['value'] ?? ''} ${json[15]['value'] ?? ''} ${json[16]['value'] ?? ''}',
+    );
+  }*/
 }
+
 
 
