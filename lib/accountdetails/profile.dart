@@ -5,6 +5,8 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../auth_provider.dart';
 
+//Hasnain Rabby. Date:15/02/23
+
   Map mapResponse = {};
   Map dataResponse = {};
 bool isLoading = false;
@@ -57,6 +59,7 @@ class _ProfileState extends State<Profile> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             !isLoading ?
                 
@@ -72,14 +75,18 @@ class _ProfileState extends State<Profile> {
                        ],
                          isRepeatingAnimation: true,
                          totalRepeatCount: 20,),
-
-                         dataResponse!= null ? Container():
+                         Divider(thickness: 0.8,),
+                         //dataResponse!= null ? Container():
                              Container(
-                               alignment: Alignment.center,
-                               child: FadeInImage(placeholder: AssetImage('assets/images/placeholder.png'),
-                                   image: NetworkImage(dataResponse['avatar']),
-                               fit: BoxFit.cover),
-                             ),
+                         alignment: Alignment.center,
+                         child: ClipOval(
+                         child: FadeInImage(
+                         placeholder: AssetImage('assets/images/placeholder.png'),
+                         image: NetworkImage(dataResponse['avatar']),
+                         fit: BoxFit.cover,
+                         width: 120,
+                         height: 120,),
+                             ),),
                              //Image(image: dataResponse['avatar']),
                             // Image.network(dataResponse['avatar']),
                        Divider(

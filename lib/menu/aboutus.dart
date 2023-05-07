@@ -9,24 +9,34 @@ class AboutUsScreen extends StatelessWidget {
         title: Text('About Us',style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500)),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 30),
-          Image.asset('assets/images/logo.png', width: 100, height: 100),
-          SizedBox(height: 20),
-          Text(
-            'Your Company Name',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Description of your company and what you do.',
-            style: TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 30),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/bangladesh-parliament-logo.png', width: 100, height: 100),
+            SizedBox(height: 20),
+            Text(
+              'App Name:Library Research and Archive Management System',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center
+            ),
+            SizedBox(height: 10),
+            Text(
+              'App Version:1.0.0+1',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Design & Developed by: MS Electrohome',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+           // Image.asset('assets/images/2.JPG', width: 200, height: 100)
+          ],
+        ),
       ),
     );
   }

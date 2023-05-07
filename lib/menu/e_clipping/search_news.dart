@@ -160,8 +160,7 @@ class _SearchNewsState extends State<SearchNews> {
               onPressed:    _searchNews,
             ),
             SizedBox(height: 20),
-              _isLoading
-                  ? Center(child: CircularProgressIndicator())
+              _isLoading ? Center(child: CircularProgressIndicator())
                   :
               Column(
               crossAxisAlignment: CrossAxisAlignment.start,
