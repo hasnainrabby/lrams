@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import '../auth_provider.dart';
 import 'e_clipping/eclipping.dart';
 import 'dart:developer' as logDev;
+
 //Hasnain Rabby. Date:07/05/23
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
@@ -19,29 +21,35 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
   String _selectedItem = 'title';
   List _books = [];
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String token = '';
   bool isLoading = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     token = Provider.of<AuthProvider>(context).token;
-  //  _fetchBooks();
     _getSearchResults();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text("LRAMS,Bangladesh National Parliament",style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.w500,fontSize: 16),),
+        title: const Text(
+          "LRAMS,Bangladesh National Parliament",
+          style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontWeight: FontWeight.w500,
+              fontSize: 16),
+        ),
         centerTitle: true,
       ),
-      body:Stack(
+      body: Stack(
         children: [
           Container(
             alignment: Alignment.topCenter,
@@ -54,9 +62,13 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: AnimatedTextKit(
                 animatedTexts: [
-                  TyperAnimatedText('Library Research and Archive Management System',
+                  TyperAnimatedText(
+                      'Library Research and Archive Management System',
                       textStyle: const TextStyle(
-                          fontWeight: FontWeight.w500, fontSize: 12, fontFamily: 'Montserrat', color: Colors.green)),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          fontFamily: 'Montserrat',
+                          color: Colors.green)),
                 ],
                 isRepeatingAnimation: true,
                 totalRepeatCount: 15,
@@ -76,7 +88,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     margin: EdgeInsets.only(left: 3.0),
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(25)),
+                      borderRadius:
+                          BorderRadius.only(bottomRight: Radius.circular(25)),
                       image: DecorationImage(
                           image: AssetImage(
                             'assets/images/bangladesh-parliament-logo.png',
@@ -106,9 +119,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.person),
                   title: const Text("My Account",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Montserrat')),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat')),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const MyAccount()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MyAccount()));
                   },
                 ),
               ),
@@ -122,9 +141,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.notifications),
                   title: const Text("Notices",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Montserrat')),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat')),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NoticePage()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const NoticePage()));
                   },
                 ),
               ),
@@ -138,9 +161,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.newspaper),
                   title: const Text("E-clipping",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Montserrat')),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat')),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Eclipping()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Eclipping()));
                   },
                 ),
               ),
@@ -154,18 +183,25 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: ListTile(
                   leading: const Icon(FontAwesomeIcons.arrowLeft),
                   title: const Text("Log Out",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Montserrat')),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat')),
                   onTap: () async {
                     // call the logout API to invalidate the token
-                    final response = await post(Uri.parse('https://library.parliament.gov.bd:8080/api/auth/logout'),
+                    final response = await post(
+                        Uri.parse(
+                            'https://library.parliament.gov.bd:8080/api/auth/logout'),
                         headers: {'Authorization': 'Bearer $token'});
                     if (response.statusCode == 200) {
                       // remove the token from the provider
                       Provider.of<AuthProvider>(context, listen: false).token;
                       // navigate to the login screen
-                      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login', (route) => false);
                     } else {
-                      debugPrint('Logout failed with error code ${response.statusCode}');
+                      debugPrint(
+                          'Logout failed with error code ${response.statusCode}');
                       // show an error message if the logout API returns an error
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Logout failed. Please try again later.'),
@@ -185,9 +221,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: ListTile(
                   leading: const Icon(FontAwesomeIcons.noteSticky),
                   title: const Text("About Us",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, fontFamily: 'Montserrat')),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Montserrat')),
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUsScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AboutUsScreen()));
                   },
                 ),
               ),
@@ -197,14 +239,16 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
+
   Widget searchView() {
     return Column(
       children: [
         Card(
           elevation: 5,
           color: Colors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(15),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
               ),
               side: BorderSide(width: 2, color: Colors.green)),
           child: Container(
@@ -218,16 +262,22 @@ class _SearchScreenState extends State<SearchScreen> {
                   width: MediaQuery.of(context).size.width * .55,
                   child: DropdownButton<String>(
                     value: _selectedItem,
-                    onChanged: (value) => setState(() => _selectedItem = value!),
+                    onChanged: (value) =>
+                        setState(() => _selectedItem = value!),
                     items: const [
-                      DropdownMenuItem(value: 'selected_category', child: Text('Selected Category')),
+                      DropdownMenuItem(
+                          value: 'selected_category',
+                          child: Text('Selected Category')),
                       DropdownMenuItem(value: 'title', child: Text('Title')),
                       DropdownMenuItem(value: 'author', child: Text('Author')),
-                      DropdownMenuItem(value: 'subject', child: Text('Subject')),
+                      DropdownMenuItem(
+                          value: 'subject', child: Text('Subject')),
                       DropdownMenuItem(value: 'issn', child: Text('ISSN')),
                       DropdownMenuItem(value: 'isbn', child: Text('ISBN')),
-                      DropdownMenuItem(value: 'accession_number', child: Text('Accession Number')),
-                      DropdownMenuItem(value: 'call_number', child: Text('Call Number')),
+                      DropdownMenuItem(
+                          value: 'publisher', child: Text('Publisher')),
+                      DropdownMenuItem(
+                          value: 'call_number', child: Text('Call Number')),
                     ],
                     style: const TextStyle(
                       color: Colors.black54,
@@ -241,7 +291,6 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: Colors.green,
                     ),
                     isExpanded: true,
-
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -252,11 +301,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     decoration: InputDecoration(
                       labelText: 'Search',
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green, width: 2.0),
+                        borderSide: const BorderSide(color: Colors.green, width: 2.0),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green, width: 2.0),
+                        borderSide: const BorderSide(color: Colors.green, width: 2.0),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
@@ -271,7 +320,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .6,
                   child: ElevatedButton(
-                    onPressed: _fetchBooks,
+                    onPressed: _getSearchResults,
                     child: const Text(
                       'Search',
                       style: TextStyle(
@@ -284,7 +333,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.green),
                       padding: MaterialStateProperty.all(
-                        const EdgeInsets.symmetric(vertical: 16.0, horizontal: 50.0),
+                        const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 50.0),
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -300,18 +350,21 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
         Expanded(
-            child:!isLoading? ListView.builder(
-              itemCount: _books.length,
-              itemBuilder: (context, index) => ListTiles(data: _books[index]),
-            ): Center(
-              child: CircularProgressIndicator(color: Colors.green),
-            )
-          ),
-
+            child: isLoading
+                ? (_books.isEmpty)
+                    ? const Center(child: Text("Please Search Books...."))
+                    : const Center(
+                        child: CircularProgressIndicator(color: Colors.green),
+                      )
+                : ListView.builder(
+                    itemCount: _books.length,
+                    itemBuilder: (context, index) =>
+                        ListTiles(data: _books[index]),
+                  )),
       ],
     );
-
   }
+
   Future<void> _getSearchResults() async {
     await _fetchBooks();
   }
@@ -321,16 +374,43 @@ class _SearchScreenState extends State<SearchScreen> {
       isLoading = true;
     });
     try {
-      final queryParameters = {
+      Map<String, dynamic> queryParameters = {};
+      String selectedItem = _selectedItem.toLowerCase();
+      String searchValue = _searchController.text;
+      String searchKey = '';
+      // Determine the search key based on the selected item in the dropdown menu
+      switch (selectedItem) {
+        case 'title':
+          searchKey = 'title';
+          break;
+        case 'author':
+          searchKey = 'author';
+          break;
+        case 'subject':
+          searchKey = 'subject';
+          break;
+
+        // Add more cases for additional search options
+        default:
+          searchKey = 'title';
+          break;
+      }
+      // Set the query parameters based on the selected item and entered text
+      queryParameters['field'] = searchKey;
+      queryParameters['search[0]'] = searchKey;
+      queryParameters['searchValue[0]'] = searchValue;
+      /* final queryParameters = {
         'search[0]': _selectedItem,
         'searchValue[0]': _searchController.text,
-      };
+        'field': _selectedItem,
+      };*/
       final uri = Uri.https(
         'library.parliament.gov.bd:8080',
         '/api/advance-search/book-search',
         queryParameters,
       );
-      final response = await get(uri, headers: {'Authorization': 'Bearer $token'});
+      final response =
+          await get(uri, headers: {'Authorization': 'Bearer $token'});
 
       if (response.statusCode != 200) {
         throw Exception('Request failed with status: ${response.statusCode}.');
@@ -338,7 +418,8 @@ class _SearchScreenState extends State<SearchScreen> {
       logDev.log('Response body: ${response.body}');
       final responseData = json.decode(response.body);
       if (!responseData['status']) {
-        throw Exception('Request failed with error: ${responseData['message']}.');
+        throw Exception(
+            'Request failed with error: ${responseData['message']}.');
       }
       final books = Book.fromJson(responseData);
 
@@ -361,7 +442,12 @@ class _SearchScreenState extends State<SearchScreen> {
           if (bookDetailList[j].subfieldId == 3) {
             bookDetail['author'] = bookDetailList[j].value;
           }
-          if (bookDetailList[j].subfieldId == 14 || bookDetailList[j].subfieldId == 16) {
+          if (bookDetailList[j].subfieldId == 11 ||
+              bookDetailList[j].subfieldId == 16) {
+            bookDetail['subject'] = bookDetailList[j].value;
+          }
+          if (bookDetailList[j].subfieldId == 14 ||
+              bookDetailList[j].subfieldId == 16) {
             bookDetail['classification_number'] = bookDetailList[j].value;
           }
           if (bookDetailList[j].subfieldId == 17) {
@@ -379,8 +465,15 @@ class _SearchScreenState extends State<SearchScreen> {
         }
         _books.add(bookDetail);
       }
-      setState(() {
-        isLoading = false;
+      await Future.delayed(const Duration(seconds: 2), () {
+        if (isLoading) {
+          setState(() {
+            isLoading = false;
+            if (_books.isEmpty) {
+              const Text("No books found.");
+            }
+          });
+        }
       });
     } catch (e) {
       // Handle error
@@ -405,16 +498,16 @@ class Book {
   });
 
   factory Book.fromJson(Map<String, dynamic> json) => Book(
-    status: json["status"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+        status: json["status"],
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "status": status,
-    "message": message,
-    "data": data?.toJson(),
-  };
+        "status": status,
+        "message": message,
+        "data": data?.toJson(),
+      };
 }
 
 class Data {
@@ -433,21 +526,28 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    books: json["books"] == null ? null : Books.fromJson(json["books"]),
-    suggestion: json["suggestion"],
-    closest: json["closest"] == null ? [] : List<dynamic>.from(json["closest"]!.map((x) => x)),
-    keyword: json["keyword"],
-    itemType:
-    json["itemType"] == null ? [] : List<ItemType>.from(json["itemType"]!.map((x) => ItemType.fromJson(x))),
-  );
+        books: json["books"] == null ? null : Books.fromJson(json["books"]),
+        suggestion: json["suggestion"],
+        closest: json["closest"] == null
+            ? []
+            : List<dynamic>.from(json["closest"]!.map((x) => x)),
+        keyword: json["keyword"],
+        itemType: json["itemType"] == null
+            ? []
+            : List<ItemType>.from(
+                json["itemType"]!.map((x) => ItemType.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "books": books?.toJson(),
-    "suggestion": suggestion,
-    "closest": closest == null ? [] : List<dynamic>.from(closest!.map((x) => x)),
-    "keyword": keyword,
-    "itemType": itemType == null ? [] : List<dynamic>.from(itemType!.map((x) => x.toJson())),
-  };
+        "books": books?.toJson(),
+        "suggestion": suggestion,
+        "closest":
+            closest == null ? [] : List<dynamic>.from(closest!.map((x) => x)),
+        "keyword": keyword,
+        "itemType": itemType == null
+            ? []
+            : List<dynamic>.from(itemType!.map((x) => x.toJson())),
+      };
 }
 
 class Books {
@@ -482,38 +582,43 @@ class Books {
   });
 
   factory Books.fromJson(Map<String, dynamic> json) => Books(
-    currentPage: json["current_page"],
-    data: Map.from(json["data"]!)
-        .map((k, v) => MapEntry<String, List<Datum>>(k, List<Datum>.from(v.map((x) => Datum.fromJson(x))))),
-    firstPageUrl: json["first_page_url"],
-    from: json["from"],
-    lastPage: json["last_page"],
-    lastPageUrl: json["last_page_url"],
-    links: json["links"] == null ? [] : List<Link>.from(json["links"]!.map((x) => Link.fromJson(x))),
-    nextPageUrl: json["next_page_url"],
-    path: json["path"],
-    perPage: json["per_page"],
-    prevPageUrl: json["prev_page_url"],
-    to: json["to"],
-    total: json["total"],
-  );
+        currentPage: json["current_page"],
+        data: Map.from(json["data"]!).map((k, v) =>
+            MapEntry<String, List<Datum>>(
+                k, List<Datum>.from(v.map((x) => Datum.fromJson(x))))),
+        firstPageUrl: json["first_page_url"],
+        from: json["from"],
+        lastPage: json["last_page"],
+        lastPageUrl: json["last_page_url"],
+        links: json["links"] == null
+            ? []
+            : List<Link>.from(json["links"]!.map((x) => Link.fromJson(x))),
+        nextPageUrl: json["next_page_url"],
+        path: json["path"],
+        perPage: json["per_page"],
+        prevPageUrl: json["prev_page_url"],
+        to: json["to"],
+        total: json["total"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "current_page": currentPage,
-    "data":
-    Map.from(data!).map((k, v) => MapEntry<String, dynamic>(k, List<dynamic>.from(v.map((x) => x.toJson())))),
-    "first_page_url": firstPageUrl,
-    "from": from,
-    "last_page": lastPage,
-    "last_page_url": lastPageUrl,
-    "links": links == null ? [] : List<dynamic>.from(links!.map((x) => x.toJson())),
-    "next_page_url": nextPageUrl,
-    "path": path,
-    "per_page": perPage,
-    "prev_page_url": prevPageUrl,
-    "to": to,
-    "total": total,
-  };
+        "current_page": currentPage,
+        "data": Map.from(data!).map((k, v) => MapEntry<String, dynamic>(
+            k, List<dynamic>.from(v.map((x) => x.toJson())))),
+        "first_page_url": firstPageUrl,
+        "from": from,
+        "last_page": lastPage,
+        "last_page_url": lastPageUrl,
+        "links": links == null
+            ? []
+            : List<dynamic>.from(links!.map((x) => x.toJson())),
+        "next_page_url": nextPageUrl,
+        "path": path,
+        "per_page": perPage,
+        "prev_page_url": prevPageUrl,
+        "to": to,
+        "total": total,
+      };
 }
 
 class Datum {
@@ -542,30 +647,34 @@ class Datum {
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    bibliographicId: json["bibliographic_id"],
-    bibliographicTagId: json["bibliographic_tag_id"],
-    subfieldId: json["subfield_id"],
-    value: json["value"],
-    subfieldUiId: json["subfield_ui_id"],
-    tagUiId: json["tag_ui_id"],
-    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-    updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-    score: json["score"]?.toDouble(),
-  );
+        id: json["id"],
+        bibliographicId: json["bibliographic_id"],
+        bibliographicTagId: json["bibliographic_tag_id"],
+        subfieldId: json["subfield_id"],
+        value: json["value"],
+        subfieldUiId: json["subfield_ui_id"],
+        tagUiId: json["tag_ui_id"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        score: json["score"]?.toDouble(),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "bibliographic_id": bibliographicId,
-    "bibliographic_tag_id": bibliographicTagId,
-    "subfield_id": subfieldId,
-    "value": value,
-    "subfield_ui_id": subfieldUiId,
-    "tag_ui_id": tagUiId,
-    "created_at": createdAt?.toIso8601String(),
-    "updated_at": updatedAt?.toIso8601String(),
-    "score": score,
-  };
+        "id": id,
+        "bibliographic_id": bibliographicId,
+        "bibliographic_tag_id": bibliographicTagId,
+        "subfield_id": subfieldId,
+        "value": value,
+        "subfield_ui_id": subfieldUiId,
+        "tag_ui_id": tagUiId,
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
+        "score": score,
+      };
 }
 
 class Link {
@@ -580,16 +689,16 @@ class Link {
   });
 
   factory Link.fromJson(Map<String, dynamic> json) => Link(
-    url: json["url"],
-    label: json["label"],
-    active: json["active"],
-  );
+        url: json["url"],
+        label: json["label"],
+        active: json["active"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "url": url,
-    "label": label,
-    "active": active,
-  };
+        "url": url,
+        "label": label,
+        "active": active,
+      };
 }
 
 class ItemType {
@@ -600,12 +709,12 @@ class ItemType {
   });
 
   factory ItemType.fromJson(Map<String, dynamic> json) => ItemType(
-    value: json["value"],
-  );
+        value: json["value"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "value": value,
-  };
+        "value": value,
+      };
 }
 
 class ListTiles extends StatelessWidget {
@@ -618,59 +727,58 @@ class ListTiles extends StatelessWidget {
     return Card(
       elevation: 5,
       color: Colors.green.shade100,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10),
-
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
           ),
           side: BorderSide(width: 2, color: Colors.white)),
       child: SingleChildScrollView(
         child: ListTile(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                  Flexible(
-                    child: Text(
-                      '${data['title'] ?? ''} ${data['subtitle'] ?? ''}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
-                    ),
-                  ),
-
-              ],
-            ),
-            subtitle:Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('By: ${data['author'] ?? ''}',
-              style: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 1),
-            Text('Classification Number: ${data['classification_number'] ?? ''}',
-              style: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 1),
-            Text(
-              data['other_title'] ?? '',
-              style: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 1),
-                Text(
-                  'Publisher:${data['publisher1'] ?? ''}${data['publisher2'] ?? ''}${data['publisher3']}',
-                  style: const TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Text(
+                  '${data['title'] ?? ''} ${data['subtitle'] ?? ''}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
                 ),
-
-
-
-          ],
-        ),
+              ),
+            ],
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'By: ${data['author'] ?? ''}',
+                style: const TextStyle(
+                    fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                'Classification Number: ${data['classification_number'] ?? ''}',
+                style: const TextStyle(
+                    fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                data['other_title'] ?? '',
+                style: const TextStyle(
+                    fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                'Publisher:${data['publisher1'] ?? ''}${data['publisher2'] ?? ''}${data['publisher3']}',
+                style: const TextStyle(
+                    fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
-
-

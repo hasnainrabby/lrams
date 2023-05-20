@@ -85,7 +85,16 @@ class _ProfileState extends State<Profile> {
                          image: NetworkImage(dataResponse['avatar']),
                          fit: BoxFit.cover,
                          width: 120,
-                         height: 120,),
+                         height: 120,
+                           imageErrorBuilder: (context, error, stackTrace) {
+                             return Image.asset(
+                               'assets/images/placeholder.png',
+                               fit: BoxFit.cover,
+                               width: 120,
+                               height: 120,
+                             );
+                           },),
+
                              ),),
                              //Image(image: dataResponse['avatar']),
                             // Image.network(dataResponse['avatar']),

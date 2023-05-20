@@ -136,6 +136,7 @@ class _LRAMSState extends State<LRAMS> {
       child: TextFormField(
         style: TextStyle(
             color: Colors.white,),
+        cursorColor: Colors.white,
         controller: emailController,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(8.0),
@@ -163,6 +164,7 @@ class _LRAMSState extends State<LRAMS> {
       child: TextFormField(
         style: TextStyle(
           color: Colors.white,),
+        cursorColor: Colors.white,
         obscureText: true,
         controller: passwordController,
         decoration: InputDecoration(
@@ -266,9 +268,9 @@ void login(String username, String password,BuildContext context,bool rememberMe
       print('Login Failed');
       final snackBar = SnackBar(
         duration: Duration(milliseconds: 900),
-        content: Text("Please Enter your email & password!",textAlign: TextAlign.center,style:
+        content: Text("Please Enter & Check your email & password!",textAlign: TextAlign.center,style:
         TextStyle(fontSize:15,fontWeight:FontWeight.w700,fontFamily: 'Montserrat',color: Colors.white,),),
-        backgroundColor: Colors.yellow.shade500,);
+        backgroundColor: Colors.black54,);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
