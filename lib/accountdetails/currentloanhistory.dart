@@ -17,7 +17,7 @@ class _currentLoanHistoryState extends State<currentLoanHistory> {
   late Map dataResponse;
   late List listResponse = [];
   bool isLoading = true;
-  final df =  DateFormat.yMMMMd();
+  final df = DateFormat.yMMMMd();
   String token = '';
 
   @override
@@ -62,9 +62,10 @@ class _currentLoanHistoryState extends State<currentLoanHistory> {
         ),
         body: isLoading
             ? const Center(
-                child: CircularProgressIndicator(color: Colors.green),
-              )
-            : listResponse.isEmpty
+                child: CircularProgressIndicator(
+                color: Colors.green,
+              ))
+            : listResponse == null || listResponse.isEmpty
                 ? const Center(
                     child: Text(
                       'No Data Found',
@@ -75,152 +76,156 @@ class _currentLoanHistoryState extends State<currentLoanHistory> {
                       ),
                     ),
                   )
-                : Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Container(
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.green.shade100,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Row(
+                : Column(
+                  children: [
+                    Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              child: Card(
+                                elevation: 5,
+                                color: Colors.green.shade100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text(
-                                        'Loan Date:' +
-                                            df.format(DateTime.parse(
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Loan Date:' +
+                                                df.format(DateTime.parse(
+                                                    listResponse[index]
+                                                        ['loan_date'])),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Credit:' +
+                                                listResponse[index]['credit']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Due Date:' +
+                                                df.format(DateTime.parse(
+                                                    listResponse[index]
+                                                        ['due_date'])),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Debit:' +
+                                                listResponse[index]['debit']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Return Date:' +
+                                                df.format(DateTime.parse(
+                                                    listResponse[index]
+                                                        ['return_date'])),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Return:' +
+                                                listResponse[index]['is_return']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Status:' +
+                                                listResponse[index]['status']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Fine Clear:' +
+                                                listResponse[index]['fine_clear']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Renew:' +
+                                                listResponse[index]['renew']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Discount Percentage:' +
                                                 listResponse[index]
-                                                    ['loan_date'])),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        'Credit:' +
-                                            listResponse[index]['credit']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
+                                                        ['discount_percentage']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Due Date:' +
-                                            df.format(DateTime.parse(
-                                                listResponse[index]
-                                                    ['due_date'])),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        'Debit:' +
-                                            listResponse[index]['debit']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Return Date:' +
-                                            df.format(DateTime.parse(
-                                                listResponse[index]
-                                                    ['return_date'])),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        'Return:' +
-                                            listResponse[index]['is_return']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Status:' +
-                                            listResponse[index]['status']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        'Fine Clear:' +
-                                            listResponse[index]['fine_clear']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Renew:' +
-                                            listResponse[index]['renew']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        'Discount Percentage:' +
-                                            listResponse[index]
-                                                    ['discount_percentage']
-                                                .toString(),
-                                        style: const TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: listResponse == null ? 0 : listResponse.length,
-                    ),
-                  ));
+                            );
+                          },
+                          itemCount: listResponse == null ? 0 : listResponse.length,
+                        ),
+                      ),
+                  ],
+                ));
   }
 }

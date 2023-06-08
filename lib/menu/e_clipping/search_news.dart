@@ -6,6 +6,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../../auth_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SearchNews extends StatefulWidget {
@@ -20,9 +21,12 @@ class _SearchNewsState extends State<SearchNews> {
   final TextEditingController _keywordsController = TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
-  List<dynamic> _searchResults = [];
+  List _searchResults = [];
   String token = '';
   bool _isLoading = false;
+  FocusNode _titleFocusNode = FocusNode();
+  FocusNode _keywordsFocusNode = FocusNode();
+
 
   @override
   void didChangeDependencies() {
@@ -30,37 +34,79 @@ class _SearchNewsState extends State<SearchNews> {
     token = Provider.of<AuthProvider>(context, listen: false).token;
     _searchNews();
   }
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _keywordsController.dispose();
+    _titleFocusNode.dispose();
+    _keywordsFocusNode.dispose();
+    super.dispose();
+  }
 
   void _searchNews() async {
     setState(() {
       _isLoading = true;
     });
+    // Reset the search results
+    setState(() {
+      _searchResults = [];
+    });
 
     final token = Provider.of<AuthProvider>(context, listen: false).token;
+    // Unfocus the text fields
+    _titleFocusNode.unfocus();
+    _keywordsFocusNode.unfocus();
 
     // Construct the URL for the API call
     String apiUrl =
         "https://library.parliament.gov.bd:8080/api/e-clipping/search_news?";
-    apiUrl += "title=${_titleController.text}";
-    apiUrl += "&keywords=${_keywordsController.text}";
-    apiUrl += "&start_date=${_startDate?.toString().substring(0, 10)}";
-    apiUrl += "&end_date=${_endDate?.toString().substring(0, 10)}";
 
-    // Call the API and parse the JSON response
+    if (_titleController.text.isNotEmpty) {
+      apiUrl += "title=${_titleController.text}&";
+    }
+    if (_keywordsController.text.isNotEmpty) {
+      apiUrl += "&keywords=${_keywordsController.text}&";
+    }
+    if (_startDate != null) {
+      final formattedStartDate = DateFormat('yyyy-MM-dd').format(_startDate!);
+      print('Formatted Start Date: $formattedStartDate');
+      apiUrl += "start_date=$formattedStartDate&";
+    }
+
+    if (_endDate != null) {
+      final formattedEndDate = DateFormat('yyyy-MM-dd').format(_endDate!);
+      print('Formatted End Date: $formattedEndDate');
+      apiUrl += "end_date=$formattedEndDate";
+    }
+    // Remove the trailing '&' character from the URL
+    if (apiUrl.endsWith("&")) {
+      apiUrl = apiUrl.substring(0, apiUrl.length - 1);
+    }
+
     var response = await get(
       Uri.parse(apiUrl),
       headers: {'Authorization': 'Bearer $token'},
     );
+    if(response.statusCode == 200){
+      var dataResponse = json.decode(response.body);
+      var news = News.fromJson(dataResponse);
+      setState(() {
+        _searchResults = news.data!.allNews!.data!;
+        _isLoading = false;
+        if (_searchResults.isEmpty) {
+          // Show a message indicating no news found
+          Text("No News Found");
+        }
+      });
+    }else{// Handle error case
+      setState(() {
+        _isLoading = false;
+        // Show an error message to the user
+      });}
 
-    var data = json.decode(response.body);
-    setState(() {
-      _searchResults = data["data"]["allNews"];
-      _isLoading = false;
-      if (_searchResults.isEmpty) {
-        Text("No News Found");
-      }
-    });
   }
+
+
 
   Future<File> _downloadFile(String url) async {
     try {
@@ -113,6 +159,7 @@ class _SearchNewsState extends State<SearchNews> {
             children: [
               TextField(
                 controller: _titleController,
+                focusNode: _titleFocusNode,
                 decoration: const InputDecoration(
                   labelText: "Title",
                 ),
@@ -120,6 +167,7 @@ class _SearchNewsState extends State<SearchNews> {
               const SizedBox(height: 10),
               TextField(
                 controller: _keywordsController,
+                focusNode: _keywordsFocusNode,
                 decoration: const InputDecoration(
                   labelText: "Keywords",
                 ),
@@ -229,9 +277,9 @@ class _SearchNewsState extends State<SearchNews> {
                                   side: BorderSide(
                                       width: 2, color: Colors.green)),
                               child: ListTile(
-                                title: Text(_searchResults[index]["title"]),
+                                title: Text(_searchResults[index].title),
                                 subtitle:
-                                    Text(_searchResults[index]["news_date"]),
+                                    Text(_searchResults[index].newsDate),
                                 trailing: IconButton(
                                   icon: const Icon(
                                     Icons.picture_as_pdf,
@@ -239,14 +287,17 @@ class _SearchNewsState extends State<SearchNews> {
                                   ),
                                   onPressed: () async {
                                     // Open PDF file
-                                    final url = _searchResults[index]['file'];
+                                    final url = _searchResults[index].file;
                                     _openPdf(context, url);
                                   },
                                 ),
                               ),
                             );
+
                           },
                         ),
+
+
             ],
           ),
         ),
@@ -254,3 +305,142 @@ class _SearchNewsState extends State<SearchNews> {
     );
   }
 }
+class News {
+  bool? status;
+  String? message;
+  NewsData? data;
+
+  News({this.status, this.message, this.data});
+
+  factory News.fromJson(Map<String, dynamic> json) {
+    return News(
+      status: json['status'],
+      message: json['message'],
+      data: json['data'] != null ?  NewsData.fromJson(json['data']): null,
+    );
+  }
+}
+
+class NewsData {
+  AllNews? allNews;
+
+  NewsData({this.allNews});
+
+  factory NewsData.fromJson(Map<String, dynamic> json) {
+    return NewsData(
+      allNews: json['allNews'] !=null? AllNews.fromJson(json['allNews']): null,
+    );
+  }
+}
+
+class AllNews {
+  int? currentPage;
+  List<NewsItem>? data;
+
+  AllNews({this.currentPage, this.data});
+
+  factory AllNews.fromJson(Map<String, dynamic> json) {
+    return AllNews(
+      currentPage: json['current_page'],
+      data: (json['data'] as List<dynamic>?)
+          ?.map((x) => NewsItem.fromJson(x))
+          .toList(),
+      // List<NewsItem>.from(json['data'].map((x) => NewsItem.fromJson(x))),
+    );
+  }
+}
+
+class NewsItem {
+  int? id;
+  int? order;
+  String? title;
+  dynamic concernIssue;
+  String? newsDate;
+  int? sourceId;
+  String? file;
+  dynamic member;
+  dynamic keyword;
+  dynamic description;
+  String? createdAt;
+  String? updatedAt;
+  String? isShowable;
+  int? status;
+  String? newsLink;
+  String? newsLanguage;
+  int? mailSent;
+  NewsSource? source;
+
+  NewsItem({
+    this.id,
+    this.order,
+    this.title,
+    this.concernIssue,
+    this.newsDate,
+    this.sourceId,
+    this.file,
+    this.member,
+    this.keyword,
+    this.description,
+    this.createdAt,
+    this.updatedAt,
+    this.isShowable,
+    this.status,
+    this.newsLink,
+    this.newsLanguage,
+    this.mailSent,
+    this.source,
+  });
+
+  factory NewsItem.fromJson(Map<String, dynamic> json) {
+    return NewsItem(
+      id: json['id'],
+      order: json['order'],
+      title: json['title'],
+      concernIssue: json['concern_issue'],
+      newsDate: json['news_date'],
+      sourceId: json['source_id'],
+      file: json['file'],
+      member: json['member'],
+      keyword: json['keyword'],
+      description: json['description'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      isShowable: json['is_showable'],
+      status: json['status'],
+      newsLink: json['news_link'],
+      newsLanguage: json['news_language'],
+      mailSent: json['mail_sent'],
+      source: json['source'] != null? NewsSource.fromJson(json['source']): null,
+    );
+  }
+}
+
+class NewsSource {
+  int? id;
+  String? name;
+  String? url;
+  String? logo;
+  String? createdAt;
+  String? updatedAt;
+
+  NewsSource({
+    this.id,
+    this.name,
+    this.url,
+    this.logo,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory NewsSource.fromJson(Map<String, dynamic> json) {
+    return NewsSource(
+      id: json['id'],
+      name: json['name'],
+      url: json['url'],
+      logo: json['logo'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+    );
+  }
+}
+

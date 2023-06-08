@@ -78,26 +78,30 @@ class _NoticePageState extends State<NoticePage> {
                       ),
                     ),
                   )
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: notices.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          elevation: 5,
-                          color: Colors.green.shade100,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(10),
+                : Column(
+                  children: [
+                    Expanded(
+                        child: ListView.builder(
+                          itemCount: notices.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              elevation: 5,
+                              color: Colors.green.shade100,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(10),
+                                  ),
+                                  side: BorderSide(width: 2, color: Colors.green)),
+                              child: ListTile(
+                                title: Text('Title :' + notices[index]['title']),
+                                subtitle: Text(
+                                    'Description:' + notices[index]['description']),
                               ),
-                              side: BorderSide(width: 2, color: Colors.green)),
-                          child: ListTile(
-                            title: Text('Title :' + notices[index]['title']),
-                            subtitle: Text(
-                                'Description:' + notices[index]['description']),
-                          ),
-                        );
-                      },
-                    ),
-                  ));
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ));
   }
 }

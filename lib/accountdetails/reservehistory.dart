@@ -74,48 +74,52 @@ class _ReserveHistoryState extends State<ReserveHistory> {
                       ),
                     ),
                   )
-                : Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Container(
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.green.shade100,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    'Created:' +
-                                        df.format(DateTime.parse(
-                                            (listResponse[index]
-                                                ['created_at']))),
-                                    style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
+                : Column(
+                  children: [
+                    Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              child: Card(
+                                elevation: 5,
+                                color: Colors.green.shade100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        'Created:' +
+                                            df.format(DateTime.parse(
+                                                (listResponse[index]
+                                                    ['created_at']))),
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Text(
+                                        'Updated:' +
+                                            df.format(DateTime.parse(
+                                                (listResponse[index]
+                                                    ['updated_at']))),
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    'Updated:' +
-                                        df.format(DateTime.parse(
-                                            (listResponse[index]
-                                                ['updated_at']))),
-                                    style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: listResponse == null ? 0 : listResponse.length,
-                    ),
-                  ));
+                            );
+                          },
+                          itemCount: listResponse == null ? 0 : listResponse.length,
+                        ),
+                      ),
+                  ],
+                ));
   }
 }

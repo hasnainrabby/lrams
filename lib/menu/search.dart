@@ -349,13 +349,13 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
         ),
+
         Expanded(
             child: isLoading
-                ? (_books.isEmpty)
-                    ? const Center(child: Text("Please Search Books...."))
-                    : const Center(
+                ? const Center(
                         child: CircularProgressIndicator(color: Colors.green),
-                      )
+                      ):(_books == null ||_books.isEmpty)
+    ? const Center(child: Text("No Books Found,Please Search....",style: TextStyle(fontFamily: 'Montserrat',fontWeight: FontWeight.bold),))
                 : ListView.builder(
                     itemCount: _books.length,
                     itemBuilder: (context, index) =>
@@ -366,7 +366,24 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _getSearchResults() async {
-    await _fetchBooks();
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _fetchBooks();
+
+      setState(() {
+        isLoading = false;
+        if (_books.isEmpty) {
+          // Display "No books found" message
+          Center(child: Text("No Books Found"),);
+        }
+      });
+    } catch (e) {
+      // Handle error
+      print('Error fetching books: $e');
+    }
   }
 
   Future<void> _fetchBooks() async {

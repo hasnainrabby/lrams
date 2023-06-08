@@ -52,7 +52,7 @@ class _SearchHistoryState extends State<SearchHistory> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green,
-          title: Text(
+          title: const Text(
             'Search History',
             style: TextStyle(
                 fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
@@ -62,87 +62,105 @@ class _SearchHistoryState extends State<SearchHistory> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            !isLoading
-                ? Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Container(
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.green.shade100,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(10),
-                                ),
-                                side:
-                                    BorderSide(width: 2, color: Colors.green)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Row(
+            isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    color: Colors.green,
+                  ))
+                : listResponse == null || listResponse.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No Data Found',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              child: Card(
+                                elevation: 5,
+                                color: Colors.green.shade100,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomRight: Radius.circular(10),
+                                    ),
+                                    side: BorderSide(
+                                        width: 2, color: Colors.green)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceAround,
                                     children: [
-                                      Text(
-                                        'Category:' +
-                                            listResponse[index]['category']
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Category:' +
+                                                listResponse[index]['category']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Keyword:' +
+                                                listResponse[index]['keyword']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        'Keyword:' +
-                                            listResponse[index]['keyword']
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              'Search value:' +
+                                                  listResponse[index]
+                                                          ['keyword_value']
+                                                      .toString(),
+                                              style: const TextStyle(
+                                                  fontFamily: 'Montserrat',
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          Text(
+                                            df.format(DateTime.parse(
+                                                (listResponse[index]
+                                                    ['created_at']))),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      )
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Search value:' +
-                                            listResponse[index]['keyword_value']
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        df.format(DateTime.parse(
-                                            (listResponse[index]
-                                                ['created_at']))),
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: listResponse == null ? 0 : listResponse.length,
-                    ),
-                  )
-                : Center(
-                    child: CircularProgressIndicator(),
-                  )
+                            );
+                          },
+                          itemCount:
+                              listResponse == null ? 0 : listResponse.length,
+                        ),
+                      )
           ],
         ));
   }

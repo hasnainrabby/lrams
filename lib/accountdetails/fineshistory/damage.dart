@@ -51,7 +51,7 @@ class _DamageState extends State<Damage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.green,
-          title: Text(
+          title: const Text(
             'Damage & Losts',
             style: TextStyle(
                 fontFamily: 'Montserrat', fontWeight: FontWeight.w500),
@@ -59,11 +59,11 @@ class _DamageState extends State<Damage> {
           centerTitle: true,
         ),
         body: isLoading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(color: Colors.green),
               )
             : listResponse == null || listResponse.isEmpty
-                ? Center(
+                ? const Center(
                     child: Text(
                       'No Data Found',
                       style: TextStyle(
@@ -73,89 +73,93 @@ class _DamageState extends State<Damage> {
                       ),
                     ),
                   )
-                : Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return Container(
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.green.shade100,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Row(
+                : Column(
+                  children: [
+                    Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              child: Card(
+                                elevation: 5,
+                                color: Colors.green.shade100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
                                     children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Credit :' +
+                                                listResponse[index]['credit']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Debit :' +
+                                                listResponse[index]['debit']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Fine Clear :' +
+                                                listResponse[index]['is_fine_clear']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            'Description :' +
+                                                listResponse[index]['description']
+                                                    .toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'Montserrat',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
                                       Text(
-                                        'Credit :' +
-                                            listResponse[index]['credit']
-                                                .toString(),
-                                        style: TextStyle(
+                                        'Created:' +
+                                            df.format(DateTime.parse(
+                                                (listResponse[index]
+                                                    ['created_at']))),
+                                        style: const TextStyle(
                                             fontFamily: 'Montserrat',
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500),
                                       ),
                                       Text(
-                                        'Debit :' +
-                                            listResponse[index]['debit']
-                                                .toString(),
-                                        style: TextStyle(
+                                        'Updated:' +
+                                            df.format(DateTime.parse(
+                                                (listResponse[index]
+                                                    ['updated_at']))),
+                                        style: const TextStyle(
                                             fontFamily: 'Montserrat',
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500),
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Fine Clear :' +
-                                            listResponse[index]['is_fine_clear']
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text(
-                                        'Description :' +
-                                            listResponse[index]['description']
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontFamily: 'Montserrat',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Created:' +
-                                        df.format(DateTime.parse(
-                                            (listResponse[index]
-                                                ['created_at']))),
-                                    style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    'Updated:' +
-                                        df.format(DateTime.parse(
-                                            (listResponse[index]
-                                                ['updated_at']))),
-                                    style: TextStyle(
-                                        fontFamily: 'Montserrat',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: listResponse == null ? 0 : listResponse.length,
-                    ),
-                  ));
+                            );
+                          },
+                          itemCount: listResponse == null ? 0 : listResponse.length,
+                        ),
+                      ),
+                  ],
+                ));
   }
 }

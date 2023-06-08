@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
@@ -68,14 +67,20 @@ class _ProfileState extends State<Profile> {
                      padding: EdgeInsets.all(10.0),
                      shrinkWrap: true,
                      children: [
-                       AnimatedTextKit(animatedTexts: [
+                       Padding(
+                         padding:EdgeInsets.all(MediaQuery.of(context).size.width/20),
+                         child: const Text('Library Research and Archive Management System',style: TextStyle(
+                             fontWeight: FontWeight.w500,fontSize: 12,fontFamily: 'Montserrat',color: Colors.green
+                         ),textAlign: TextAlign.center,),
+                       ),
+                      /* AnimatedTextKit(animatedTexts: [
                          TyperAnimatedText('   Library Research and Archive Management System',textStyle: TextStyle(
                              fontWeight: FontWeight.w500,fontSize: 15,fontFamily: 'Montserrat',color: Colors.green
                          ) ),
                        ],
                          isRepeatingAnimation: true,
-                         totalRepeatCount: 20,),
-                         Divider(thickness: 0.8,),
+                         totalRepeatCount: 20,),*/
+                         const Divider(thickness: 0.8,),
                          //dataResponse!= null ? Container():
                              Container(
                          alignment: Alignment.center,
